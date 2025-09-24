@@ -1,0 +1,122 @@
+// src/pages/HomePage.tsx
+import React, { useMemo, useState } from "react";
+import { NEWS } from "../data/news";
+import SearchBar from "../components/SearchBar";
+import NewsList from "../components/NewsList";
+
+export default function HomePage() {
+  const [filter, setFilter] = useState("");
+
+  const filtered = useMemo(() => {
+    const q = filter.trim().toLowerCase();
+    if (!q) return NEWS;
+    return NEWS.filter(
+      (n) =>
+        n.title.toLowerCase().includes(q) ||
+        n.content.toLowerCase().includes(q) ||
+        n.categories.join(" ").toLowerCase().includes(q)
+    );
+  }, [filter]);
+
+  return (
+    <div>
+      <h1 className="text-2xl font-bold mb-4">Bem vindo!</h1>
+
+      <SearchBar value={filter} onChange={setFilter} />
+
+      {filtered.length === 0 ? (
+        <p className="text-gray-600 mt-6">Nenhum artigo encontrado.</p>
+      ) : (
+        <NewsList items={filtered} />
+      )}
+
+      {/* Botão carregar mais */}
+      <div className="flex justify-center mt-8">
+        <button className="px-6 py-2 bg-blue-600 text-white font-medium rounded hover:bg-blue-700">
+          Carregar mais
+        </button>
+      </div>
+    </div>
+  );
+}
+
+
+// src/pages/NewsPage.tsx
+import React from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { NEWS } from "../data/news";
+import NewsDetail from "../components/NewsDetail";
+
+export default function NewsPage() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const item = NEWS.find((n) => n.id === id);
+
+  if (!item)
+    return (
+      <div className="text-center py-10">
+        <p className="text-gray-600 text-lg">Notícia não encontrada.</p>
+        <button
+          className="mt-6 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          onClick={() => navigate(-1)}
+        >
+          Voltar
+        </button>
+      </div>
+    );
+
+  return (
+    <div className="max-w-3xl mx-auto">
+      <Link
+        to="/"
+        className="inline-block mb-4 text-blue-600 hover:underline text-sm"
+      >
+        ← Voltar para a home
+      </Link>
+      <NewsDetail item={item} />
+    </div>
+  );
+}
+
+// src/components/NewsCard.tsx
+import React from "react";
+import { News } from "../types";
+import { Link } from "react-router-dom";
+
+function truncate(text: string, max = 80) {
+  return text.length <= max ? text : text.slice(0, max) + "...";
+}
+
+export default function NewsCard({ item }: { item: News }) {
+  return (
+    <article className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition bg-white">
+      {item.image && (
+        <img
+          src={item.image}
+          alt={item.title}
+          className="w-full h-40 object-cover"
+        />
+      )}
+      <div className="p-4">
+        <h3 className="text-lg font-semibold mb-1">
+          <Link to={`/news/${item.id}`} className="hover:underline">
+            {item.title}
+          </Link>
+        </h3>
+        <p className="text-sm text-gray-500 mb-2">{item.date}</p>
+        <p className="text-gray-700 text-sm">{truncate(item.content, 80)}</p>
+
+        <div className="mt-3 flex flex-wrap gap-2 text-xs">
+          {item.categories.map((c) => (
+            <span
+              key={c}
+              className="px-2 py-1 bg-gray-100 rounded text-gray-700"
+            >
+              {c}
+            </span>
+          ))}
+        </div>
+      </div>
+    </article>
+  );
+}
