@@ -1,0 +1,365 @@
+news.ts
+export interface News {
+  id: number;
+  title: string;
+  date: string;
+  content: string;
+  image: string;
+  categories: string[];
+  comments: { name: string; text: string }[];
+}
+
+services/newsdata.ts
+import { News } from '../types/News';
+
+export const news: News[] = [
+  {
+    id: 1,
+    title: 'Breakthrough in Renewable Energy',
+    date: '2023-01-15',
+    content: 'Scientists have developed a new solar panel technology that increases efficiency by 50%. This could revolutionize the energy sector and reduce dependence on fossil fuels. The panels use advanced nanomaterials to capture more sunlight and convert it into electricity with minimal loss.',
+    image: 'https://via.placeholder.com/300x200?text=News+1',
+    categories: ['Science', 'Technology'],
+    comments: [
+      { name: 'Alice', text: 'This is amazing!' },
+      { name: 'Bob', text: 'Hope it becomes affordable soon.' },
+    ],
+  },
+  {
+    id: 2,
+    title: 'Global Markets React to Trade Agreement',
+    date: '2023-02-20',
+    content: 'Major stock indices rose following the announcement of a new trade deal between the US and EU. The agreement aims to reduce tariffs on key goods and services, boosting economic growth for both regions.',
+    image: 'https://via.placeholder.com/300x200?text=News+2',
+    categories: ['Economy', 'Politics'],
+    comments: [
+      { name: 'Charlie', text: 'Great for businesses.' },
+      { name: 'Dana', text: 'What about environmental impacts?' },
+    ],
+  },
+  {
+    id: 3,
+    title: 'New Species Discovered in Amazon',
+    date: '2023-03-10',
+    content: 'Biologists have found a previously unknown frog species in the Amazon rainforest. This discovery highlights the importance of conservation efforts in biodiversity hotspots.',
+    image: 'https://via.placeholder.com/300x200?text=News+3',
+    categories: ['Science', 'Environment'],
+    comments: [
+      { name: 'Eve', text: 'Nature is full of surprises.' },
+    ],
+  },
+  {
+    id: 4,
+    title: 'Tech Giant Releases New Smartphone',
+    date: '2023-04-05',
+    content: 'The latest model features improved camera technology and longer battery life. It also includes AI enhancements for better user experience.',
+    image: 'https://via.placeholder.com/300x200?text=News+4',
+    categories: ['Technology', 'Gadgets'],
+    comments: [
+      { name: 'Frank', text: 'Can\'t wait to upgrade!' },
+      { name: 'Grace', text: 'Too expensive for me.' },
+    ],
+  },
+  {
+    id: 5,
+    title: 'Climate Summit Ends with Bold Pledges',
+    date: '2023-05-12',
+    content: 'World leaders committed to reducing carbon emissions by 40% by 2030. The agreement includes funding for developing countries to transition to green energy.',
+    image: 'https://via.placeholder.com/300x200?text=News+5',
+    categories: ['Environment', 'Politics'],
+    comments: [
+      { name: 'Hank', text: 'About time!' },
+    ],
+  },
+  {
+    id: 6,
+    title: 'Breakthrough in Cancer Research',
+    date: '2023-06-18',
+    content: 'A new drug shows promise in targeting specific cancer cells without harming healthy tissue. Clinical trials are ongoing.',
+    image: 'https://via.placeholder.com/300x200?text=News+6',
+    categories: ['Health', 'Science'],
+    comments: [
+      { name: 'Ivy', text: 'Hope for many families.' },
+      { name: 'Jack', text: 'Science saves lives.' },
+    ],
+  },
+  {
+    id: 7,
+    title: 'Space Mission to Mars Planned',
+    date: '2023-07-22',
+    content: 'NASA announces collaboration with private companies for a manned mission to Mars by 2035. Preparations include new rocket technology.',
+    image: 'https://via.placeholder.com/300x200?text=News+7',
+    categories: ['Space', 'Technology'],
+    comments: [
+      { name: 'Kara', text: 'Exciting times ahead.' },
+    ],
+  },
+  {
+    id: 8,
+    title: 'Economic Recovery Post-Pandemic',
+    date: '2023-08-30',
+    content: 'Global GDP growth exceeds expectations as economies rebound from COVID-19 impacts. Unemployment rates are falling in many countries.',
+    image: 'https://via.placeholder.com/300x200?text=News+8',
+    categories: ['Economy'],
+    comments: [
+      { name: 'Leo', text: 'Good news for everyone.' },
+      { name: 'Mia', text: 'Still challenges remain.' },
+    ],
+  },
+  {
+    id: 9,
+    title: 'AI Advances in Healthcare',
+    date: '2023-09-14',
+    content: 'Machine learning algorithms now diagnose diseases with higher accuracy than humans in some cases. This could transform medical practices.',
+    image: 'https://via.placeholder.com/300x200?text=News+9',
+    categories: ['Technology', 'Health'],
+    comments: [
+      { name: 'Noah', text: 'AI is the future.' },
+    ],
+  },
+  {
+    id: 10,
+    title: 'Wildlife Conservation Success',
+    date: '2023-10-25',
+    content: 'Endangered panda population increases due to successful breeding programs and habitat protection in China.',
+    image: 'https://via.placeholder.com/300x200?text=News+10',
+    categories: ['Environment', 'Animals'],
+    comments: [
+      { name: 'Olivia', text: 'Wonderful achievement.' },
+      { name: 'Paul', text: 'More efforts needed worldwide.' },
+    ],
+  },
+];
+header
+import React from 'react';
+
+const Header: React.FC = () => {
+  return (
+    <header className="bg-gray-800 text-white p-4">
+      <h1 className="text-2xl font-bold">News Portal</h1>
+    </header>
+  );
+};
+
+export default Header;
+footer
+import React from 'react';
+
+const Footer: React.FC = () => {
+  return (
+    <footer className="bg-gray-800 text-white p-4 mt-8">
+      <p>Student1 - RA: 123456</p>
+      <p>Student2 - RA: 789012</p>
+      <p>Student3 - RA: 345678</p>
+    </footer>
+  );
+};
+
+export default Footer;
+
+newscard
+import React from 'react';
+import { News } from '../types/News';
+import { Link } from 'react-router-dom';
+
+interface NewsCardProps {
+  news: News;
+}
+
+const NewsCard: React.FC<NewsCardProps> = ({ news }) => {
+  return (
+    <Link to={`/news/${news.id}`} className="block">
+      <div className="bg-white p-4 rounded shadow hover:shadow-lg transition">
+        <img src={news.image} alt={news.title} className="w-full h-40 object-cover mb-2" />
+        <h2 className="text-xl font-semibold">{news.title}</h2>
+        <p className="text-gray-600 text-sm">{news.date}</p>
+        <p className="text-gray-700">{news.content.slice(0, 50)}...</p>
+        <div className="flex flex-wrap mt-2">
+          {news.categories.map((cat) => (
+            <span key={cat} className="bg-gray-200 text-gray-800 px-2 py-1 rounded mr-2 mb-2 text-xs">
+              {cat}
+            </span>
+          ))}
+        </div>
+      </div>
+    </Link>
+  );
+};
+
+export default NewsCard;
+comments
+import React from 'react';
+
+interface Comment {
+  name: string;
+  text: string;
+}
+
+interface CommentsProps {
+  comments: Comment[];
+}
+
+const Comments: React.FC<CommentsProps> = ({ comments }) => {
+  return (
+    <div className="mt-8">
+      <h3 className="text-lg font-semibold mb-4">Comments</h3>
+      {comments.length === 0 ? (
+        <p>No comments yet.</p>
+      ) : (
+        <ul>
+          {comments.map((comment, index) => (
+            <li key={index} className="mb-4 border-b pb-2">
+              <p className="font-bold">{comment.name}</p>
+              <p>{comment.text}</p>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+
+export default Comments;
+homepage
+import React, { useState } from 'react';
+import { news } from '../services/newsData';
+import NewsCard from '../components/NewsCard';
+import Footer from '../components/Footer';
+
+const Home: React.FC = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredNews = news.filter((item) => {
+    const lowerTerm = searchTerm.toLowerCase();
+    return (
+      item.title.toLowerCase().includes(lowerTerm) ||
+      item.content.toLowerCase().includes(lowerTerm) ||
+      item.categories.some((cat) => cat.toLowerCase().includes(lowerTerm))
+    );
+  });
+
+  return (
+    <div className="container mx-auto p-4">
+      <h2 className="text-3xl font-bold mb-4">Welcome to News Portal</h2>
+      <input
+        type="text"
+        placeholder="Search news..."
+        className="w-full p-2 mb-4 border rounded"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+      {filteredNews.length === 0 ? (
+        <p className="text-center text-gray-600">No articles found.</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredNews.map((item) => (
+            <NewsCard key={item.id} news={item} />
+          ))}
+        </div>
+      )}
+      <Footer />
+    </div>
+  );
+};
+
+export default Home;
+import React, { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { news } from '../services/newsData';
+import Comments from '../components/Comments';
+
+const NewsDetail: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const newsItem = news.find((item) => item.id === Number(id));
+
+  const [showComments, setShowComments] = useState(false);
+
+  useEffect(() => {
+    // Simulate loading after initial render
+    setTimeout(() => {
+      setShowComments(true);
+    }, 500);
+  }, []);
+
+  if (!newsItem) {
+    return <p className="text-center text-gray-600">Article not found.</p>;
+  }
+
+  return (
+    <div className="container mx-auto p-4">
+      <Link to="/" className="text-blue-500 hover:underline mb-4 block">
+        &lt; Back to Home
+      </Link>
+      <img src={newsItem.image} alt={newsItem.title} className="w-full h-64 object-cover mb-4" />
+      <h1 className="text-3xl font-bold mb-2">{newsItem.title}</h1>
+      <p className="text-gray-600 mb-4">{newsItem.date}</p>
+      <p className="text-gray-800">{newsItem.content}</p>
+      <div className="flex flex-wrap mt-4">
+        {newsItem.categories.map((cat) => (
+          <span key={cat} className="bg-gray-200 text-gray-800 px-2 py-1 rounded mr-2 mb-2">
+            {cat}
+          </span>
+        ))}
+      </div>
+      {showComments && <Comments comments={newsItem.comments} />}
+    </div>
+  );
+};
+
+export default NewsDetail;
+
+notfound
+import React from 'react';
+import { Link } from 'react-router-dom';
+
+const NotFound: React.FC = () => {
+  return (
+    <div className="container mx-auto p-4 text-center">
+      <h1 className="text-4xl font-bold mb-4">404 - Page Not Found</h1>
+      <p className="mb-4">Sorry, the page you're looking for doesn't exist.</p>
+      <Link to="/" className="text-blue-500 hover:underline">
+        Go back to Home
+      </Link>
+    </div>
+  );
+};
+
+export default NotFound;
+app
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Header from './components/Header';
+import Home from './pages/Home';
+import NewsDetail from './pages/NewsDetail';
+import NotFound from './pages/NotFound';
+
+function App() {
+  return (
+    <Router>
+      <div className="flex flex-col min-h-screen">
+        <Header />
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/news/:id" element={<NewsDetail />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </main>
+      </div>
+    </Router>
+  );
+}
+
+export default App;
+
+main
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import './index.css';
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+);
