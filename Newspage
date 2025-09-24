@@ -1,0 +1,101 @@
+// =============================
+// News Page - src/pages/NewsPage.tsx
+// =============================
+import React from 'react'
+import { useParams, Link, useNavigate } from 'react-router-dom'
+import { NEWS } from '../data/news'
+import NewsDetail from '../components/NewsDetail'
+
+export default function NewsPage(){
+  const { id } = useParams()
+  const navigate = useNavigate()
+  const item = NEWS.find(n=> n.id === id)
+
+  if(!item) return (
+    <div>
+      <p>Notícia não encontrada.</p>
+      <button className="mt-4 px-4 py-2 border rounded" onClick={()=>navigate(-1)}>Voltar</button>
+    </div>
+  )
+
+  return (
+    <div>
+      <Link to="/" className="text-sm text-blue-600 underline">&larr; Voltar para a home</Link>
+      <NewsDetail item={item} />
+    </div>
+  )
+}
+
+// =============================
+// Componentes usados na News Page
+// =============================
+
+// src/components/NewsDetail.tsx
+import React from 'react'
+import { News } from '../types'
+import Comments from './Comments'
+
+export default function NewsDetail({item}:{item: News}){
+  return (
+    <article className="mt-4">
+      <h2 className="text-2xl font-bold mb-1">{item.title}</h2>
+      <p className="text-sm text-gray-500 mb-4">{item.date}</p>
+      {item.image && <img src={item.image} alt="" className="w-full max-h-64 object-cover mb-4 rounded" />}
+      <div className="prose max-w-none mb-6">{item.content}</div>
+      <section>
+        <h3 className="text-lg font-semibold mb-2">Comentários</h3>
+        <Comments initialComments={item.comments ?? []} />
+      </section>
+    </article>
+  )
+}
+
+// src/components/Comments.tsx
+import React, { useEffect, useState } from 'react'
+import { Comment } from '../types'
+
+export default function Comments({initialComments}:{initialComments: Comment[]}){
+  const [comments, setComments] = useState<Comment[]>([])
+  const [loading, setLoading] = useState(true)
+  const [name, setName] = useState('')
+  const [text, setText] = useState('')
+
+  // Simula carregamento do componente de comentários depois do carregamento inicial
+  useEffect(()=>{
+    const t = setTimeout(()=>{
+      setComments(initialComments)
+      setLoading(false)
+    }, 600)
+    return ()=>clearTimeout(t)
+  }, [initialComments])
+
+  function addComment(e: React.FormEvent){
+    e.preventDefault()
+    if(!name.trim() || !text.trim()) return
+    const c: Comment = { id: String(Date.now()), name: name.trim(), text: text.trim() }
+    setComments(prev=>[...prev, c])
+    setName('')
+    setText('')
+  }
+
+  if(loading) return <p>Carregando comentários...</p>
+
+  return (
+    <div>
+      <ul className="space-y-3 mb-4">
+        {comments.length === 0 ? <li className="text-sm text-gray-600">Sem comentários ainda.</li> : comments.map(c=> (
+          <li key={c.id} className="border p-3 rounded">
+            <p className="font-semibold">{c.name}</p>
+            <p>{c.text}</p>
+          </li>
+        ))}
+      </ul>
+
+      <form onSubmit={addComment} className="space-y-2">
+        <input value={name} onChange={e=>setName(e.target.value)} placeholder="Nome" className="w-full border rounded px-2 py-1" />
+        <textarea value={text} onChange={e=>setText(e.target.value)} placeholder="Comentário" className="w-full border rounded px-2 py-1" />
+        <button className="px-4 py-2 bg-blue-600 text-white rounded">Enviar comentário</button>
+      </form>
+    </div>
+  )
+}
