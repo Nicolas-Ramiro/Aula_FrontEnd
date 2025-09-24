@@ -1,0 +1,100 @@
+// =============================
+// Home Page - src/pages/HomePage.tsx
+// =============================
+import React, { useMemo, useState } from 'react'
+import { NEWS } from '../data/news'
+import SearchBar from '../components/SearchBar'
+import NewsList from '../components/NewsList'
+
+export default function HomePage(){
+  const [filter, setFilter] = useState('')
+
+  const filtered = useMemo(()=>{
+    const q = filter.trim().toLowerCase()
+    if(!q) return NEWS
+    return NEWS.filter(n=>
+      n.title.toLowerCase().includes(q)
+      || n.content.toLowerCase().includes(q)
+      || n.categories.join(' ').toLowerCase().includes(q)
+    )
+  }, [filter])
+
+  return (
+    <div>
+      <h1 className="text-2xl font-bold mb-4">Notícias</h1>
+      <SearchBar value={filter} onChange={setFilter} />
+
+      {filtered.length === 0 ? (
+        <p>Nenhum artigo encontrado.</p>
+      ) : (
+        <NewsList items={filtered} />)
+      }
+    </div>
+  )
+}
+
+// =============================
+// Componentes usados na Home Page
+// =============================
+
+// src/components/SearchBar.tsx
+import React from 'react'
+
+type Props = {
+  value: string;
+  onChange: (v: string) => void;
+}
+
+export default function SearchBar({value, onChange}: Props){
+  return (
+    <div className="mb-4">
+      <input
+        aria-label="Pesquisar notícias"
+        value={value}
+        onChange={(e)=>onChange(e.target.value)}
+        placeholder="Filtrar por título, conteúdo ou categoria"
+        className="w-full border rounded px-3 py-2"
+      />
+    </div>
+  )
+}
+
+// src/components/NewsList.tsx
+import React from 'react'
+import { News } from '../types'
+import NewsCard from './NewsCard'
+
+export default function NewsList({items}:{items: News[]}){
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {items.map(i=> <NewsCard key={i.id} item={i} />)}
+    </div>
+  )
+}
+
+// src/components/NewsCard.tsx
+import React from 'react'
+import { News } from '../types'
+import { Link } from 'react-router-dom'
+
+function truncate(text: string, max = 50){
+  if(text.length <= max) return text
+  return text.slice(0, max) + '...'
+}
+
+export default function NewsCard({item}:{item: News}){
+  return (
+    <article className="border rounded overflow-hidden shadow-sm hover:shadow-md transition">
+      <div className="p-4">
+        <h3 className="text-lg font-semibold mb-1"><Link to={`/news/${item.id}`}>{item.title}</Link></h3>
+        <p className="text-sm text-gray-500 mb-2">{item.date}</p>
+        <p className="text-gray-700">{truncate(item.content, 50)}</p>
+        <div className="mt-3 text-sm">
+          {item.categories.map(c=> (
+            <span key={c} className="inline-block mr-2 px-2 py-1 bg-gray-100 rounded">{c}</span>
+          ))}
+        </div>
+      </div>
+    </article>
+  )
+}
